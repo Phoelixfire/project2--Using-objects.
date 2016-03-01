@@ -1,281 +1,129 @@
-//// Project 2 - Converting to objects.
-
-String title="Project #2a (start using objects)";
-String author="Bruce Alan Martin; 2016/2/29";
-
-//// GLOBAL DECLARATIONS ////
 float horizon;
-float xSun=50, ySun=50, dxSun=2;
-int score=0, total=0, game=1;
+float sunX=0, sunY=50;
+float alX, alY;
+float goldX= random(0,500), goldY= random(0,400);
 
-Nugget gold, silver, uranium;
-Hero mickey;
-Monster darth;
-
-
-//// SETUP ////
-void setup() {
-  size( 800, 600 );
-  horizon=  height/4;
-  // Instantiate the objects: gold, hero, monster.
-  mickey= new Hero();
-  darth= new Monster();
-  gold=  new Nugget();
-  // More metals.
-  silver=  new Nugget();
-  silver.r= 180; 
-  silver.g= 180; 
-  silver.b= 200; 
-  uranium=  new Nugget();
-  uranium.r= 200; 
-  uranium.g= 50; 
-  uranium.b= 100; 
-  reset();
-}
-void reset() {
-  mickey.reset();
-  darth.reset();
-  // Place metals at random position.
-  gold.x=  random( 100, width-100 );
-  gold.y=  random( horizon+20, height-20 );
-  //
-  silver.x=  random( 100, width-100 );
-  silver.y=  random( horizon+20, height-20 );
-  uranium.x=  random( 100, width-100 );
-  uranium.y=  random( horizon+20, height-20 );
-}
-
-//// NEXT FRAME:  scene, show, action, messages ////
-void draw() {
-  background( 150, 200, 240 );            // blue sky  
-  if (key == '?') {
-    help();
-    return;
+void setup()
+{
+  size(500, 400);
+  horizon= height/2;
   }
-  scene();
-  if (score < -500) {
-    textSize( 30 );
-    fill( 255, 0, 255 );
-    text( "G A M E    O V E R", width/3, height/2 );
-    textSize( 12 );
-    fill( 255, 0, 255 );
-    text( "Press 'g' key for new game.", width/2, 100+height/2 );
-    return;
-  }
-  show();
-  action();
-  credits();
-}
-// Display help messages.
-void help() {
-  fill(0);
-  text( "Click the mouse to reposition the hero.", width/3, height/2 );
-  text( "q to quit; r to reset; g for new game.", width/3, 15+height/2 );
+
+
+void draw()
+{
+ scene();
+ tree();
+ house();
+ sun();
+ creature();
+ clouds();
+ name();
+ gold();
+
+ 
+
 }
 
-//// SCENE:  sun, tree, house. ////
 void scene() {
   noStroke();
-  fill( 255, 255, 0 );                   // yellowish sun.
-  ellipse( xSun, ySun, 30, 30 );
-  fill( 50, 200, 100 );                   // greenish grass
-  rectMode( CORNER );
-  rect( 0, horizon, width, height*3/4 );
-  // Sun moves across sky.  
-  xSun =  xSun + dxSun;
-  // Sunset.
-  if (xSun > width) {
-    xSun=  20;
-    ySun=  random( 20, horizon-20 );
-    dxSun=  random( 0.5, 4 );
-    score -= 25;                      // Lose 25 points per day!
+  background (#06bbdb);   //background
+  fill (#009900);
+  rect( 0, horizon+100, width, height/2);    //grass
   }
+  
+void house() { 
+  fill (#db0606);
+  rect (200, 225, 75, 75);   //house
+  fill (#86592d);
+  triangle(180, 245, 240, 185, 295, 245);   //roof
+  fill(#7b6d56);
+  rect(240,265, 20,35);  //door
+  fill(#f2fa00);
+  ellipse(240, 225, 25, 25); //top window
+  rect( 210, 265, 20,20); //bottom window
+   fill(#000000);
+  stroke(1);  //stroke for lines
+  line(240,212.5, 240,237.5); //top window lines
+  line(227.5, 225, 252.5, 225);  //top window lines
+  line(220, 265, 220, 285);  //bottom window lines
+  line(210, 275, 230, 275);  //bottom window lines
 }
 
-//// SHOW:  display the creatures, etc.
-void show() {
-  mickey.show();
-  darth.show();
-  //
-  gold.show();
-  silver.show();
-  uranium.show();
+void tree() {
+  fill(#50431F);
+  triangle( 142, horizon+100, 128, horizon+100, 135, horizon+50 );  //trunk
+  fill( 100, 200, 100 );
+  ellipse( 135, 255, 40, 40); //leaves
+}
+ 
+ 
+void clouds() {
+  noStroke(); // white
+  fill(#FFFFFF);
+  ellipse(100,100,40,40);  //left cloud
+  ellipse(115,120,40,40);
+  ellipse(90,115,40,40);
+  ellipse(135,100,40,40);
+  ellipse(145,115,40,40);
+
+
+  ellipse(390,80,40,40);   //right cloud
+  ellipse(370,100,40,40);
+  ellipse(360,90,40,40);
+  ellipse(400,100,40,40);
+  ellipse(420,85,40,40);
+
 }
 
-//// ACTION:  move the creatures, etc.
-void action() {
-  // Check for collisions.
-  if ( dist( mickey.x, mickey.y, gold.x, gold.y )  < 50 ) {
-    //// Hero got the gold!
-    score=  score + 100;
-    reset();
-  }
-  if ( dist( darth.x, darth.y, mickey.x, mickey.y )  < 50 ) {
-    //// Monster catches hero.  :-(
-    score=  score - 100;              // Lose 100 points!
-    reset();
-  }
-  // Change speeds, to chase.
-  if (gold.y>horizon) {
-    // Hero chases gold.
-    mickey.dx=  (gold.x - mickey.x) / frameRate;
-    mickey.dy=  (gold.y - mickey.y) / frameRate;
-    // Monster chases hero.
-    darth.dx=  (mickey.x - darth.x) / frameRate;
-    darth.dy=  (mickey.y - darth.y) / frameRate;
-  }
-  // Now, move the creatures.
-  mickey.move();
-  darth.move();
+void sun() {  
+  noStroke();
+  fill( 255, 255, 0 );   
+  ellipse( sunX, sunY, 40, 40 );   //sun 
+ 
+ if (sunX >width) {
+   sunX= 0;
+ }  
+  sunX = sunX+1;
+  
+}
+void creature() {
+  alX= mouseX;
+  alY= mouseY;
+  noStroke();
+  fill(#e6ccb3);  
+  rect(alX+5, alY-10, 10, 10); //head
+  fill(#420300);
+  rect(alX, alY, 20, 20); //torso
+  stroke(1);  //stroke for lines
+  fill(#000000);
+  line(alX+3, alY+19, alX+3, alY+30);  //left leg
+  line(alX+17, alY+19, alX+17, alY+30);  //right leg
+  line(alX, alY, alX-10, alY+5);  //left arm
+  line(alX+20, alY, alX+30, alY+5);   //right arm
 }
 
-//// MESSAGES:  display title, author, messages
-void credits() {
-  // Title, author.
-  fill(255, 0, 0);
-  textSize(20);
-  text( title, width/3, 20 );
-  // Display the score (if any).
-  if (score != 0) {
-    text( "Score:  "+score, width*2/3, 50 );
-  }
-  textSize(12);
-  if (game>1) {
-    float grandTotal=  total = score;
-    text( "Game "+ game +"  Total=" +grandTotal, width*2/3, 65 );
-  }
-  fill(0);
-  text( " +100 for gold.  -150 if caught!", width*2/3, 90 );
-  text( " -10 per day.  -25 to reset.", width*2/3, 105 );
-  //
-  text( author, 10, height-10 );
-  text( "q to quit; r to reset; g for new game, ? for help", width/2, height-10 );
+void name() {
+  fill(#999999);   
+  text( "AL", alX+5, alY+10 );
+  noStroke();
 }
 
-//// EVENT HANDLERS ////
+void gold() {
+ 
+  fill(#FCBD35);
+  ellipse(goldX,goldY, 30,16);
+
+
+if ( dist(alX,alY,goldX,goldY) < 20 ){
+ goldX=random(0,500);
+ goldY=random(0,400);
+
+}
+}
+
 void keyPressed() {
-  if (key == 'q') {  
-    exit();
-  }
-  if (key == 'r') { 
-    reset();
-    score -= 25;
-    // It costs you 25 points to reset & move the gold!
-  }
-  if (key == 'g') { 
-    game++;
-    total += score;
-    score=0;
-    reset();
-  }
-  if (key == 'x') {  
-    score -= 200;
-  }
-  // Metals.
-  if (key == 's') { 
-    silver.x=  random( 100, width-100 );
-    silver.y=  random( horizon+20, height-20 );
-  }
-  if (key == 'u') { 
-    uranium.x=  random( 100, width-100 );
-    uranium.y=  random( horizon+20, height-20 );
-  }
+  if (key== 'q' )
+  {exit();
 }
-void mousePressed() {
-  mickey.x=  mouseX;
-  mickey.y=  mouseY;
-  score -= 50;
-}
-
-
-//// OBJECTS:  Nugget, Hero, Monster. ////
-
-class Nugget {
-  float x=0, y=0;
-  float r=220, g=120, b=50;
-  // Display the (sparkling metal, if y is below the horizon. //
-  void show() {
-    if (y < horizon) { 
-      return;
-    }    // Not visible.
-    fill( r+random(25), g+random(25), b+random(25) );
-    stroke( r+random(-25, +25), g+random(-25, +25), b+random(-25, +25) );
-    ellipse( x, y, 50+random(-3, +3), 30+random(-1, +1) );
-  }
-}
-
-class Hero
-{
-  //// PROPERTIES ////
-  float x, y, dx, dy;        // Coordinates & speed.
-  float w=50, h=80;          // Dimensions of hero (small).
-  float hHead= w * 2/3;      // Head height.
-  float r=200, g=50, b=50;   // Color of hero
-
-  //// METHODS ////
-  // (Mickey starts at left.)
-  void reset() {
-    mickey.x=  50;
-    mickey.y=  horizon+50;
-    dx=5;
-    dy=3;                    // (fast)
-  }
-  // Display the hero;
-  void show() {
-    fill( r, g, b );
-    rectMode( CENTER );
-    rect( x, y, w, h );
-    // Lighter face.
-    fill( r+50, g+50, b+50 );
-    ellipse( x, y-h/2-hHead/2, hHead-10, hHead );
-  }
-  // Move the hero; bounce off walls.
-  void move() {
-    if (x>width || x<0) { 
-      dx= -dx;
-    }
-    if (y>height || y<horizon) {  
-      dy= -dy;
-    }
-    x += dx;
-    y += dy;
-  }
-}
-
-class Monster
-{
-  //// PROPERTIES ////
-  float x, y, dx, dy;          // Coordinates & speed.
-  float w=90, h=150;         // Dimensions of mosnter (big).
-  float hHead= w * 2/3;      // Head height.
-  float r=20, g=100, b=50;   // Color of monster (dark);
-
-  //// METHODS ////
-  // (Monster starts at right.)
-  void reset() {
-    darth.x=  width-50;
-    darth.y=  height-50;
-    dx=2;                    // Speed (slow).
-    dy=1;
-  }
-  // Display the monster;
-  void show() {
-    fill( r, g, b );
-    rectMode( CENTER );
-    rect( x, y, w, h );
-    // Lighter face.
-    fill( r+50, g+50, b+50 );
-    ellipse( x, y-h/2-hHead/2, hHead-10, hHead );
-  }
-  // Move & bounce off walls.
-  void move() {
-    if (x>width || x<0) { 
-      dx= -dx;
-    }
-    if (y>height || y<horizon) {  
-      dy= -dy;
-    }
-    x += dx;
-    y += dy;
-  }
 }
