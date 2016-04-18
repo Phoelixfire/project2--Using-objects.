@@ -1,0 +1,359 @@
+float horizon = 250;
+float sunX = 50;
+float sunY = 50;
+float treeX = 100;
+float i;
+float goldX = random(50, 750);
+float goldY = random(300, 570);
+int points = 0;
+
+Hero tom;
+Ore gold;
+Dog theo;
+
+void setup() {
+  size(800, 600);
+  tom= new Hero();
+  gold= new Ore();
+  theo= new Dog();
+}  
+
+
+void draw() {
+  scene();
+  sun();
+  show();
+  action();
+  score();
+}
+
+void reset() {
+  tom.reset();
+  gold.reset();
+  theo.reset();
+}
+
+void action() {
+  if (dist(tom.x, tom.y, gold.x, gold.y) >= 50) {
+    tom.dx= ((gold.x - tom.x)/50);
+    tom.dy= (gold.y - tom.y)/50;
+  }
+  if ( dist(tom.x, tom.y, gold.x, gold.y) < 50) {
+    reset();
+    points += 10;
+  }
+  if (dist(theo.x, theo.y, tom.x, tom.y) >= 50) {
+    theo.dx= ((tom.x - theo.x)/50);
+    theo.dy= (tom.y - theo.y)/50;
+  }
+  if ( dist(theo.x, theo.y, tom.x, tom.y) < 50) {
+    reset();
+    points -= 10;
+  }
+  tom.move();
+  theo.move();
+
+
+  if (tom.x > width+100 || tom.x < -100) {     //fixes if hero or dog go out of screen
+    reset();
+  }
+
+  if (tom.y > height+100 || tom.y < -100) {
+    reset();
+  }
+
+  if (theo.x > width+100 || theo.x < -100) {
+    reset();
+  }
+
+  if (theo.y > height+100 || theo.y < -100) {
+    reset();
+  }
+} 
+
+void show() {
+  tom.show();
+  gold.show();
+  theo.show();
+}
+
+void score() {
+  fill(#FFFFFF);
+  textSize(15);
+  text("Score: "+points, 50, 50);
+}
+
+
+void scene() {
+  rectMode(CORNER);
+  noStroke();
+  fill(#1D983B);
+  rect(0, horizon, 800, 400);   //grass
+  fill(#06B5D6);
+  rect(0, 0, 800, 300);  //sky
+
+  for ( int i = 0; i <= 800; i = i + 90) { //dull trees
+    fill(#645944);
+    triangle( i+50, 300, i+90, 300, i+70, 230);
+    fill(#FFFFFF);
+    triangle( i+63, 255, i+77, 255, i +70, 230);
+  }
+
+  for ( int i = 0; i <= 800; i = i + 33) {  //mountains
+    fill(#6F6553);
+    triangle( i+30, 300, i+50, 300, i+40, 240);
+    fill(#57A55F);
+    triangle( i+32, 270, i+48, 270, i+40, 240);
+  }
+
+  for ( int i = 0; i <= 800; i = i + 70) {  //bright trees
+    fill(#4B402C);
+    triangle( i, 300, i + 26, 300, i +13, 250);
+    fill(#02C917);
+    triangle( i + 3, 280, i + 22, 280, i +13, 250);
+  }
+}
+
+void sun() {
+  fill(#F1F543);
+  ellipse(sunX, sunY, 50, 50);   //sun
+  if (sunX >= 800) {
+    sunX = 0;
+  }  
+  sunX = sunX + 1;
+}
+
+class Hero {
+
+  float x = 100;
+  float y = 250;
+  float dx, dy;
+
+  void reset () {
+    x = random(0, 750);
+    y = random(300, 550);
+    dx = random(-3, 3);
+    dy = random(-3, 3);
+  }
+
+  void show() {
+    strokeWeight(1);
+    rectMode(CENTER);
+    noStroke();
+    fill(#C9A27C); 
+    rect(x -18, y, 7, 20); //left arm
+    rect(x +19, y, 7, 20); //right arm
+    stroke(#38D6D2);
+    fill(#21FAF4);  
+    rect( x -15, y -15, 15, 15);  //left shoulder pad
+    rect( x +15, y -15, 15, 15);  //right shoulder pad
+    noStroke();
+    fill(#C9A27C);   
+    rect(x, y -30, 18, 20);  //head
+    stroke(#38D6D2);
+    fill(#21FAF4);
+    rect(x -7, y+28, 13, 30);  //left leg
+    rect(x + 7, y+28, 13, 30);  //right leg
+    rect(x -7.5, y+40, 15, 10);  //left foot
+    rect(x +7.5, y+40, 15, 10);  //right foot  
+    rect(x, y -5, 30, 35);  //chest
+    noStroke();  
+    fill(#FFFFFF);
+    rect(x, y-34, 12, 2);  //eyes
+    fill(#583357);
+    rect(x, y -34, 8, 2);  //eyes
+    stroke(#38D6D2);
+    fill(#21FAF4);
+    beginShape();
+    vertex(x -12, y -27);   //helmet
+    vertex(x -8, y -27);
+    vertex(x -8, y -40);
+    vertex(x -2, y -40);
+    vertex(x -2, y -32);
+    vertex(x + 1, y -32);
+    vertex(x + 2, y -40);
+    vertex(x + 8, y -40);
+    vertex(x + 8, y -27);
+    vertex(x + 12, y -27);
+    vertex(x + 12, y -47);
+    vertex(x - 12, y -47);
+    endShape(CLOSE);
+  }
+
+  void move() { 
+    if (x>width || x < 0) {
+      dx*=-1;
+    }
+    if (y>height || y <horizon) {
+      dy*=-1;
+    }
+    x += dx;
+    y += dy;
+  }
+}
+void mousePressed() {
+  tom.x= mouseX;
+  tom.y= mouseY;
+}
+
+
+
+
+class Ore { 
+  float x = random(50, 750);
+  float y = random(300, 570);
+
+  void reset() {
+    gold.x=  random( 100, width-100 );
+    gold.y=  random( horizon+20, height-20 );
+  }      
+  void show() {
+    stroke(0);
+    fill(#DED300);
+    ellipse( x, y, 30, 15);
+  }
+}
+
+
+
+class Dog {
+  float x = 250;
+  float y = 250;
+  float dx, dy;
+
+  void reset() {
+    x = random(100, 700);
+    y = random( horizon, width-200);
+    dx = random(-1, 1);
+    dy = random(-1, 1);
+  }
+
+  void show() {
+
+    if (dx >= 0) {
+      strokeWeight(1);
+      rectMode(CENTER);
+      fill(#8A8D80);
+      rect( x, y, 100, 65);
+      rectMode(CENTER);
+      rect( x +35, y + 50, 30, 35);
+      rectMode(CENTER);
+      rect( x -35, y + 50, 30, 35);
+      rectMode(CENTER);
+      fill(#BA151A);
+      rect( x + 30, y -35, 40, 5);
+      rectMode(CENTER);
+      fill(#8A8D80);
+      rect( x + 43, y - 60, 65, 45);
+      triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
+      triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
+      triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
+      ellipseMode(CENTER);
+      fill(#000000);
+      ellipse(x + 30, y -70, 5, 17);
+      strokeWeight(4);
+      line(x + 25, y-80, x+35, y-75);
+    }
+
+
+    if (dx < 0) {
+      strokeWeight(1);
+      rectMode(CENTER);
+      fill(#8A8D80);
+      rect( x, y, 100, 65);
+      rectMode(CENTER);
+      rect( x +35, y + 50, 30, 35);
+      rectMode(CENTER);
+      rect( x -35, y + 50, 30, 35);
+      rectMode(CENTER);
+      fill(#BA151A);
+      rect( x + 30, y -35, 40, 5);
+      rectMode(CENTER);
+      fill(#8A8D80);
+      rect( x + 43, y - 60, 65, 45);
+      triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
+      triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
+      triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
+      ellipseMode(CENTER);
+      fill(#000000);
+      ellipse(x + 30, y -70, 5, 17);
+      strokeWeight(4);
+      line(x + 25, y-80, x+35, y-75);
+    }
+  }
+  void move() { 
+    if (x>width || x < 0) {
+      dx*=-1;
+    }
+    if (y>height || y <horizon) {
+      dy*=-1;
+    }
+    x += dx;
+    y += dy;
+  }
+}
+
+
+class littledog {
+  float x = 450;
+  float y = 300;
+  float dx, dy;
+
+  void reset() {
+    x = random(100, 700);
+    y = random( horizon, width-200);
+    dx = random(-1, 1);
+    dy = random(-1, 1);
+  }
+
+  void show() {
+    strokeWeight(1);
+    rectMode(CENTER);
+    fill(#8A8D80);
+    rect( x, y, 100, 65);
+    rectMode(CENTER);
+    rect( x +35, y + 50, 30, 35);
+    rectMode(CENTER);
+    rect( x -35, y + 50, 30, 35);
+    rectMode(CENTER);
+    fill(#BA151A);
+    rect( x + 30, y -35, 40, 5);
+    rectMode(CENTER);
+    fill(#8A8D80);
+    rect( x + 43, y - 60, 65, 45);
+    triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
+    triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
+    triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
+    ellipseMode(CENTER);
+    fill(#000000);
+    ellipse(x + 30, y -70, 5, 17);
+    strokeWeight(4);
+    line(x + 25, y-80, x+35, y-75);
+  }
+
+  void move() { 
+    if (x>width || x < 0) {
+      dx*=-1;
+    }
+    if (y>height || y <horizon) {
+      dy*=-1;
+    }
+    x += dx;
+    y += dy;
+  }
+}
+
+
+void keyPressed() {
+  if (key == 'r') {
+    reset();
+  }
+
+  if (key == 's') {
+    points = 0;
+  }
+
+  if (key == 'q') {
+    exit();
+  }
+}
