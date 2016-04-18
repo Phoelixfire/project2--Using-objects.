@@ -52,8 +52,14 @@ void action() {
     reset();
     points -= 10;
   }
+  if (dist(oreo.x, oreo.y, theo.x, theo.y) >= 50) {
+    oreo.dx= ((theo.x - oreo.x)/50);
+    oreo.dy= (theo.y - oreo.y)/50;
+  }
   tom.move();
   theo.move();
+  oreo.move();
+ 
 
 
   if (tom.x > width+100 || tom.x < -100) {     //fixes if hero or dog go out of screen
@@ -77,6 +83,7 @@ void show() {
   tom.show();
   gold.show();
   theo.show();
+  oreo.show();
 }
 
 void score() {
@@ -232,33 +239,33 @@ class Dog {
 
   void show() {
 
-    if (dx >= 0) {
+    if (dx >= 0) {   //dog turns right
       strokeWeight(1);
       rectMode(CENTER);
       fill(#8A8D80);
-      rect( x, y, 100, 65);
+      rect( x, y, 100, 65);  //body
       rectMode(CENTER);
-      rect( x +35, y + 50, 30, 35);
+      rect( x +35, y + 50, 30, 35);  //right leg
       rectMode(CENTER);
-      rect( x -35, y + 50, 30, 35);
+      rect( x -35, y + 50, 30, 35);  //left leg
       rectMode(CENTER);
       fill(#BA151A);
-      rect( x + 30, y -35, 40, 5);
+      rect( x + 30, y -35, 40, 5);  //leash
       rectMode(CENTER);
       fill(#8A8D80);
-      rect( x + 43, y - 60, 65, 45);
-      triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
-      triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
+      rect( x + 43, y - 60, 65, 45);  //head
+      triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);  //ear
+      triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); //tail
       triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
       ellipseMode(CENTER);
       fill(#000000);
-      ellipse(x + 30, y -70, 5, 17);
+      ellipse(x + 30, y -70, 5, 17);  //eyes
       strokeWeight(4);
-      line(x + 25, y-80, x+35, y-75);
+      line(x + 25, y-80, x+35, y-75);  //eyebrows
     }
 
 
-    if (dx < 0) {
+    if (dx < 0) {  //dog turns left
       strokeWeight(1);
       rectMode(CENTER);
       fill(#8A8D80);
@@ -280,7 +287,7 @@ class Dog {
       fill(#000000);
       ellipse(x - 30, y -70, 5, 17);  //eyes
       strokeWeight(4);
-      line(x -25, y-80, x-35, y-75);
+      line(x -25, y-80, x-35, y-75);  //eyebrows
     }
   }
   void move() { 
@@ -309,28 +316,28 @@ class Littledog {
   }
 
   void show() {
-    strokeWeight(1);
-    rectMode(CENTER);
-    fill(#8A8D80);
-    rect( x, y, 100, 65);
-    rectMode(CENTER);
-    rect( x +35, y + 50, 30, 35);
-    rectMode(CENTER);
-    rect( x -35, y + 50, 30, 35);
-    rectMode(CENTER);
-    fill(#BA151A);
-    rect( x + 30, y -35, 40, 5);
-    rectMode(CENTER);
-    fill(#8A8D80);
-    rect( x + 43, y - 60, 65, 45);
-    triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
-    triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
-    triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
-    ellipseMode(CENTER);
-    fill(#000000);
-    ellipse(x + 30, y -70, 5, 17);
-    strokeWeight(4);
-    line(x + 25, y-80, x+35, y-75);
+   strokeWeight(1);
+      rectMode(CENTER);
+      fill(#5D3923);
+      rect( x, y, 50, 32.5);  //body
+      rectMode(CENTER);
+      rect( x +17.5, y + 25, 15, 17.5);  //right leg
+      rectMode(CENTER);
+      rect( x -17.5, y + 25, 15, 17.5);  //left leg
+      rectMode(CENTER);
+      fill(#BA151A);
+      rect( x + 15, y -17.5, 20, 2.5);  //leash
+      rectMode(CENTER);
+      fill(#5D3923);
+      rect( x + 21.5, y - 30, 32.5, 22.5);  //head
+      triangle(x + 5, y - 41.5, x + 17.5, y - 69, x + 17.5, y - 41.5);  //ear
+      triangle(x - 25, y -2.5, x - 25, y - 16.5, x - 40, y - 16.5); //tail
+      triangle(x - 40, y - 27.5, x - 25, y - 16.5, x - 40, y - 16.5); 
+      ellipseMode(CENTER);
+      fill(#000000);
+      ellipse(x + 15, y -35, 2.5, 8.5);  //eyes
+      strokeWeight(4);
+      line(x + 12.5, y-40, x+17.5, y-37.5);  //eyebrows
   }
 
   void move() { 
