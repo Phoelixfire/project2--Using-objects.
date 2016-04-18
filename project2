@@ -10,12 +10,14 @@ int points = 0;
 Hero tom;
 Ore gold;
 Dog theo;
+Littledog oreo;
 
 void setup() {
   size(800, 600);
   tom= new Hero();
   gold= new Ore();
   theo= new Dog();
+  oreo= new Littledog();
 }  
 
 
@@ -262,23 +264,23 @@ class Dog {
       fill(#8A8D80);
       rect( x, y, 100, 65);
       rectMode(CENTER);
-      rect( x +35, y + 50, 30, 35);
+      rect( x +35, y + 50, 30, 35); //right leg
       rectMode(CENTER);
-      rect( x -35, y + 50, 30, 35);
+      rect( x -35, y + 50, 30, 35);  //left leg
       rectMode(CENTER);
       fill(#BA151A);
-      rect( x + 30, y -35, 40, 5);
+      rect( x -30, y -35, 40, 5);  //leash
       rectMode(CENTER);
       fill(#8A8D80);
-      rect( x + 43, y - 60, 65, 45);
-      triangle(x + 10, y - 83, x + 35, y - 118, x + 35, y - 83);
-      triangle(x - 50, y -5, x - 50, y - 33, x - 80, y - 33); 
-      triangle(x - 80, y - 55, x - 50, y - 33, x - 80, y - 33); 
+      rect( x -43, y - 60, 65, 45);  //head
+      triangle(x - 10, y - 83, x - 35, y - 118, x - 35, y - 83);  //ear
+      triangle(x + 50, y -5, x + 50, y - 33, x + 80, y - 33); //tail
+      triangle(x + 80, y - 55, x + 50, y - 33, x + 80, y - 33); 
       ellipseMode(CENTER);
       fill(#000000);
-      ellipse(x + 30, y -70, 5, 17);
+      ellipse(x - 30, y -70, 5, 17);  //eyes
       strokeWeight(4);
-      line(x + 25, y-80, x+35, y-75);
+      line(x -25, y-80, x-35, y-75);
     }
   }
   void move() { 
@@ -294,7 +296,7 @@ class Dog {
 }
 
 
-class littledog {
+class Littledog {
   float x = 450;
   float y = 300;
   float dx, dy;
